@@ -4,6 +4,8 @@ import { archiveBalls } from "./steps/archive.js";
 import { uploadBalls } from "./steps/upload.js";
 
 async function run() {
+  const start = performance.now();
+
   const archiveRes = await archiveBalls();
   const uploadRes = await uploadBalls();
 
@@ -15,7 +17,12 @@ async function run() {
     )
     .join("\n");
 
-  await sendMessage(`# ${new Date().toLocaleString("th-TH")}\n` + summary);
+  const duration = ((performance.now() - start) / 1000).toFixed(3);
+  await sendMessage(
+    `# ${new Date().toLocaleString(
+      "th-TH",
+    )} (Total ${duration} seconds)\n${summary}`,
+  );
 }
 
 try {
