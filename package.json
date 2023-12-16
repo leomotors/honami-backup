@@ -12,6 +12,7 @@
     "format": "eslint src --fix"
   },
   "dependencies": {
+    "@azure/storage-blob": "12.17.0",
     "discord-api-types": "0.37.66",
     "zod": "3.22.4"
   },
