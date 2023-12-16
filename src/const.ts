@@ -1,1 +1,1 @@
-export const targets = ["apps"];
+export const targets = ["apps", "selfhost"];
