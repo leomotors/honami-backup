@@ -4,6 +4,8 @@ import { archiveBalls } from "./steps/archive.js";
 import { uploadBalls } from "./steps/upload.js";
 
 async function run() {
+  console.log(`\n RUN ${new Date().toLocaleString("th-TH")}}`);
+
   const start = performance.now();
 
   const archiveRes = await archiveBalls();
