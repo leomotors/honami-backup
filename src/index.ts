@@ -5,7 +5,7 @@ import { dumpPostgres } from "./steps/postgres.js";
 import { uploadBalls } from "./steps/upload.js";
 
 async function run() {
-  console.log(`\n RUN ${new Date().toLocaleString("th-TH")}}`);
+  console.log(`\nRUN ${new Date().toLocaleString("th-TH")}`);
 
   const start = performance.now();
 

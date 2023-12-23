@@ -30,7 +30,8 @@ export async function uploadBalls() {
 
   for (const target of targets) {
     const start = performance.now();
-    const targetFile = `out/${target}`;
+    const targetName = target.split("/").at(-1)!;
+    const targetFile = `out/${targetName}`;
     const fileInfo = await fs.stat(targetFile);
 
     console.log(
@@ -44,7 +45,7 @@ export async function uploadBalls() {
 
     const duration = ((performance.now() - start) / 1000).toFixed(3);
 
-    result[target.replace(".tar.gz", "")] = { timeUpload: duration };
+    result[targetName.replace(".tar.gz", "")] = { timeUpload: duration };
 
     console.log(
       `Uploaded ${target} successfully in ${duration} seconds with request id ${uploadBlobResponse.requestId}`,
