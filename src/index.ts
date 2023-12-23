@@ -1,6 +1,7 @@
 import { sendMessage } from "./discord.js";
 import { limitSize } from "./lib/string.js";
 import { archiveBalls } from "./steps/archive.js";
+import { dumpPostgres } from "./steps/postgres.js";
 import { uploadBalls } from "./steps/upload.js";
 
 async function run() {
@@ -8,6 +9,7 @@ async function run() {
 
   const start = performance.now();
 
+  const pgRes = await dumpPostgres();
   const archiveRes = await archiveBalls();
   const uploadRes = await uploadBalls();
 
@@ -23,7 +25,7 @@ async function run() {
   await sendMessage(
     `# ${new Date().toLocaleString(
       "th-TH",
-    )} (Total ${duration} seconds)\n${summary}`,
+    )} (Total ${duration} seconds)\nPostgresql Dump used ${pgRes} seconds.\n${summary}`,
   );
 }
 

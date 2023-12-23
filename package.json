@@ -9,7 +9,8 @@
     "dev": "pnpm build && pnpm start",
     "start": "dotenv -- node dist/index.js",
     "lint": "eslint src",
-    "format": "eslint src --fix"
+    "format": "eslint src --fix",
+    "dev:postgres": "pnpm build && dotenv -- node dist/postgres.js"
   },
   "dependencies": {
     "@azure/storage-blob": "12.17.0",

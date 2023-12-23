@@ -6,7 +6,7 @@ export async function tarballFolder(target: string) {
   const targetFileName = target.split("/").at(-1);
 
   await exec(
-    `tar -czf out/${targetFileName}.tar.gz --exclude=postgres-data --exclude=gitea-data/ssh -C ${target} .`,
+    `tar -czf out/${targetFileName}.tar.gz --exclude=postgres-data --exclude=gitea-data/ssh --exclude=gitea-data/git/repositories/carelessdev/wallmaria-legacy.git -C ${target} .`,
   );
 
   return performance.now() - start;
