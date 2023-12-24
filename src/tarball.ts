@@ -6,8 +6,10 @@ export async function tarballFolder(target: string) {
   const targetFileName = target.split("/").at(-1);
 
   await exec(
-    `tar -czf out/${targetFileName}.tar.gz --exclude=postgres-data --exclude=portainer-data --exclude=gitea-data/ssh --exclude=gitea-data/git/repositories/carelessdev -C ${target} .`,
+    `sudo tar -czf out/${targetFileName}.tar.gz --exclude=postgres-data --exclude=gitea-data/ssh --exclude=gitea-data/git/repositories/carelessdev -C ${target} .`,
   );
+
+  await exec(`sudo chown -R 1000:1003 out/${targetFileName}.tar.gz`)
 
   return performance.now() - start;
 }
