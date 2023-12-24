@@ -1,4 +1,5 @@
 import { sendMessage } from "./discord.js";
+import { exec } from "./lib/exec.js";
 import { limitSize } from "./lib/string.js";
 import { archiveBalls } from "./steps/archive.js";
 import { dumpPostgres } from "./steps/postgres.js";
@@ -12,6 +13,9 @@ async function run() {
   const pgRes = await dumpPostgres();
   const archiveRes = await archiveBalls();
   const uploadRes = await uploadBalls();
+
+  // Cleanup
+  await exec("rm -rf out");
 
   const keys = Object.keys(archiveRes);
   const summary = keys
