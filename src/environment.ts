@@ -9,6 +9,8 @@ const environmentSchema = z.object({
   ACCOUNT_NAME: z.string(),
   ACCOUNT_KEY: z.string(),
   CONTAINER_NAME: z.string(),
+
+  EXCLUDE_FLAGS: z.string(),
 });
 
 export const environment = environmentSchema.parse(process.env);
