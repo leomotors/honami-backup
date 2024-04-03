@@ -1,3 +1,4 @@
+import { getDateStr } from "../lib/date.js";
 import { exec } from "../lib/exec.js";
 
 export async function dumpPostgres() {
@@ -5,7 +6,7 @@ export async function dumpPostgres() {
 
   await exec("rm -rf pgdump");
   await exec("mkdir -p pgdump");
-  const dateStr = new Date().toISOString().slice(0, 10);
+  const dateStr = getDateStr();
 
   const { stdout: result } = await exec(
     `sudo docker exec -t postgres psql -P pager=off -U postgres -c "SELECT datname FROM pg_database"`,
@@ -18,6 +19,11 @@ export async function dumpPostgres() {
     .filter((dat) => !["postgres", "template0", "template1"].includes(dat));
 
   console.log("Databases =", databases);
+
+  // Cleanup Previous Run
+  await exec(
+    `sudo docker exec -t postgres rm -f "/var/lib/postgresql/data/*.sql"`,
+  );
 
   for (const dat of databases) {
     const fileName = `${dat}-${dateStr}.sql`;

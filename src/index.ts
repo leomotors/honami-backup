@@ -3,7 +3,9 @@ import { exec } from "./lib/exec.js";
 import { limitSize } from "./lib/string.js";
 import { archiveBalls } from "./steps/archive.js";
 import { dumpPostgres } from "./steps/postgres.js";
+import { snapshotPrometheus } from "./steps/prometheus.js";
 import { uploadBalls } from "./steps/upload.js";
+import { createTargets } from "./targets.js";
 
 async function run() {
   console.log(`\nRUN ${new Date().toLocaleString("th-TH")}`);
@@ -11,10 +13,14 @@ async function run() {
   const start = performance.now();
 
   const pgRes = await dumpPostgres();
-  const archiveRes = await archiveBalls();
-  const uploadRes = await uploadBalls();
+  const snapshotName = await snapshotPrometheus();
 
-  // Cleanup
+  const targets = createTargets(snapshotName);
+
+  const archiveRes = await archiveBalls(targets);
+  const uploadRes = await uploadBalls(archiveRes);
+
+  // Cleanup Previous Run
   await exec("rm -rf out");
 
   const keys = Object.keys(archiveRes);

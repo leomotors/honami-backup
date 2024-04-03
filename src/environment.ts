@@ -11,6 +11,9 @@ const environmentSchema = z.object({
   CONTAINER_NAME: z.string(),
 
   EXCLUDE_FLAGS: z.string(),
+
+  PROMETHEUS_URL: z.string().regex(/^http/),
+  PROMETHEUS_TOKEN: z.string(),
 });
 
 export const environment = environmentSchema.parse(process.env);

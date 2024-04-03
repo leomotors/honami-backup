@@ -17,18 +17,14 @@ const blobServiceClient = new BlobServiceClient(
   sharedKeyCredential,
 );
 
-export async function uploadBalls() {
+export async function uploadBalls(archiveRes: Record<string, unknown>) {
   const result = {} as Record<string, { timeUpload: string }>;
 
   const containerClient = blobServiceClient.getContainerClient(
     environment.CONTAINER_NAME,
   );
 
-  const targets = (await fs.readdir("out")).filter((f) =>
-    f.endsWith(".tar.gz"),
-  );
-
-  for (const target of targets) {
+  for (const target of Object.keys(archiveRes)) {
     const start = performance.now();
     const targetName = target.split("/").at(-1)!;
     const targetFile = `out/${targetName}`;

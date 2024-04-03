@@ -1,10 +1,11 @@
 import fs from "node:fs/promises";
 
-import { targets } from "../const.js";
 import { exec } from "../lib/exec.js";
 import { tarballFolder } from "../tarball.js";
+import { Target } from "../targets.js";
+import { sendMessage } from "../discord.js";
 
-export async function archiveBalls() {
+export async function archiveBalls(targets: Target[]) {
   await exec("rm -rf out && mkdir -p out");
 
   const result = {} as Record<
@@ -13,20 +14,22 @@ export async function archiveBalls() {
   >;
 
   for (const target of targets) {
-    console.log(`Archiving ${target}...`);
-    const time = await tarballFolder(target);
+    console.log(`Archiving ${target.name}...`);
 
-    const targetName = target.split("/").at(-1)!;
-
-    const fileInfo = await fs.stat(`out/${targetName}.tar.gz`);
-    const fileSizeMB = (fileInfo.size / 2 ** 20).toFixed(4);
-
-    const timeTaken = (time / 1000).toFixed(3);
-    result[targetName] = { fileSize: fileSizeMB, timeArchive: timeTaken };
-
-    console.log(
-      `Successfully archived ${target} (${fileSizeMB} MB) in ${timeTaken} seconds`,
-    );
+    try {
+      const time = await tarballFolder(target.path);
+      const fileInfo = await fs.stat(`out/${target.name}.tar.gz`);
+      const fileSizeMB = (fileInfo.size / 2 ** 20).toFixed(4);
+  
+      const timeTaken = (time / 1000).toFixed(3);
+      result[target.name] = { fileSize: fileSizeMB, timeArchive: timeTaken };
+  
+      console.log(
+        `Successfully archived ${target.name} (${fileSizeMB} MB) in ${timeTaken} seconds`,
+      );
+    } catch (err) {
+      await sendMessage(`Failed to archive ${target.name}: ${err}`);
+    }
   }
 
   return result;
