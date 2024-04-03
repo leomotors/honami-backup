@@ -17,7 +17,7 @@ export async function archiveBalls(targets: Target[]) {
     console.log(`Archiving ${target.name}...`);
 
     try {
-      const time = await tarballFolder(target.path);
+      const time = await tarballFolder(target);
       const fileInfo = await fs.stat(`out/${target.name}.tar.gz`);
       const fileSizeMB = (fileInfo.size / 2 ** 20).toFixed(4);
   

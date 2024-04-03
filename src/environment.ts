@@ -10,7 +10,7 @@ const environmentSchema = z.object({
   ACCOUNT_KEY: z.string(),
   CONTAINER_NAME: z.string(),
 
-  EXCLUDE_FLAGS: z.string(),
+  EXCLUDE_REPOS_FLAG: z.string(),
 
   PROMETHEUS_URL: z.string().regex(/^http/),
   PROMETHEUS_TOKEN: z.string(),

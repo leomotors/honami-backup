@@ -8,6 +8,7 @@ import { environment } from "./environment.js";
 export type Target = {
   name: string;
   path: string;
+  exclude?: string;
 };
 
 export function createTargets(snapshotName: string | undefined): Target[] {
@@ -19,6 +20,16 @@ export function createTargets(snapshotName: string | undefined): Target[] {
     {
       name: "selfhost",
       path: environment.BACKUP_PATH + "/selfhost",
+      exclude: "--exclude=gitea-data --exclude=postgres-data --exclude=prometheus-data --exclude=uptime-kuma-data",
+    },
+    {
+      name: "gitea",
+      path: environment.BACKUP_PATH + "/selfhost/gitea-data",
+      exclude: environment.EXCLUDE_REPOS_FLAG,
+    },
+    {
+      name: "uptimekuma",
+      path: environment.BACKUP_PATH + "/selfhost/uptime-kuma-data",
     },
     {
       name: "pgdump",
