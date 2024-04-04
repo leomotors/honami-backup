@@ -20,7 +20,8 @@ export function createTargets(snapshotName: string | undefined): Target[] {
     {
       name: "selfhost",
       path: environment.BACKUP_PATH + "/selfhost",
-      exclude: "--exclude=gitea-data --exclude=postgres-data --exclude=prometheus-data --exclude=uptime-kuma-data",
+      exclude:
+        "--exclude=gitea-data --exclude=postgres-data --exclude=prometheus-data --exclude=uptime-kuma-data",
     },
     {
       name: "gitea",
@@ -39,7 +40,7 @@ export function createTargets(snapshotName: string | undefined): Target[] {
 
   if (snapshotName) {
     targets.push({
-      name: snapshotName,
+      name: "prometheus",
       path: `${environment.BACKUP_PATH}/selfhost/prometheus-data/snapshots/${snapshotName}`,
     });
   }

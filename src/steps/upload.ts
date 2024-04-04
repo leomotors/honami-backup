@@ -24,19 +24,18 @@ export async function uploadBalls(archiveRes: Record<string, unknown>) {
     environment.CONTAINER_NAME,
   );
 
-  for (const target of Object.keys(archiveRes)) {
+  for (const targetName of Object.keys(archiveRes)) {
     const start = performance.now();
-    const targetName = target.split("/").at(-1)!;
-    const targetFile = `out/${targetName}`;
+    const targetFile = `out/${targetName}.tar.gz`;
     const fileInfo = await fs.stat(targetFile);
 
     console.log(
-      `Uploading ${target} (File Size: ${(fileInfo.size / 2 ** 20).toFixed(
+      `Uploading ${targetName} (File Size: ${(fileInfo.size / 2 ** 20).toFixed(
         4,
       )} MB)...`,
     );
 
-    const blobClient = containerClient.getBlockBlobClient(target);
+    const blobClient = containerClient.getBlockBlobClient(targetName);
     const uploadBlobResponse = await blobClient.uploadFile(targetFile);
 
     const duration = ((performance.now() - start) / 1000).toFixed(3);
@@ -44,7 +43,7 @@ export async function uploadBalls(archiveRes: Record<string, unknown>) {
     result[targetName.replace(".tar.gz", "")] = { timeUpload: duration };
 
     console.log(
-      `Uploaded ${target} successfully in ${duration} seconds with request id ${uploadBlobResponse.requestId}`,
+      `Uploaded ${targetName} successfully in ${duration} seconds with request id ${uploadBlobResponse.requestId}`,
     );
   }
 
