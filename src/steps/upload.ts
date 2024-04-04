@@ -35,12 +35,14 @@ export async function uploadBalls(archiveRes: Record<string, unknown>) {
       )} MB)...`,
     );
 
-    const blobClient = containerClient.getBlockBlobClient(targetName);
+    const blobClient = containerClient.getBlockBlobClient(
+      targetName + ".tar.gz",
+    );
     const uploadBlobResponse = await blobClient.uploadFile(targetFile);
 
     const duration = ((performance.now() - start) / 1000).toFixed(3);
 
-    result[targetName.replace(".tar.gz", "")] = { timeUpload: duration };
+    result[targetName] = { timeUpload: duration };
 
     console.log(
       `Uploaded ${targetName} successfully in ${duration} seconds with request id ${uploadBlobResponse.requestId}`,
