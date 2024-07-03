@@ -1,4 +1,5 @@
 import { sendMessage } from "./discord.js";
+import { sql } from "./lib/db.js";
 import { exec } from "./lib/exec.js";
 import { limitSize } from "./lib/string.js";
 import { archiveBalls } from "./steps/archive.js";
@@ -31,12 +32,29 @@ async function run() {
     )
     .join("\n");
 
+  const s = (str: string | undefined) => (str ? +str : null);
+
+  const pgValues = keys.map((key) => ({
+    name: key,
+    size: s(archiveRes[key]?.fileSize),
+    time_zip: s(archiveRes[key]?.timeArchive),
+    time_upload: s(uploadRes[key]?.timeUpload),
+  }));
+
+  try {
+    await sql`INSERT INTO backup ${sql(pgValues, "name", "size", "time_zip", "time_upload")}`;
+  } catch (err) {
+    console.error("Error saving to database", err);
+  }
+
   const duration = ((performance.now() - start) / 1000).toFixed(3);
   await sendMessage(
     `# ${new Date().toLocaleString(
       "th-TH",
     )} (Total ${duration} seconds)\nPostgresql Dump used ${pgRes} seconds.\n${summary}`,
   );
+
+  await sql.end();
 }
 
 try {

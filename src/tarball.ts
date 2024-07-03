@@ -1,4 +1,3 @@
-import { environment } from "./environment.js";
 import { exec } from "./lib/exec.js";
 import { Target } from "./targets.js";
 

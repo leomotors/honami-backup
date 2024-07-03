@@ -24,7 +24,9 @@ export function isSuccess(obj: object): obj is SnapshotSuccess {
 export async function snapshotPrometheus() {
   try {
     // Cleanup Previous Snapshots
-    await exec(`rm -rf ${environment.BACKUP_PATH}/selfhost/prometheus-data/snapshots`)
+    await exec(
+      `rm -rf ${environment.BACKUP_PATH}/selfhost/prometheus-data/snapshots`,
+    );
 
     const result = await fetch(
       `${environment.PROMETHEUS_URL}/api/v1/admin/tsdb/snapshot`,
@@ -38,7 +40,9 @@ export async function snapshotPrometheus() {
     ).then((r) => r.json());
 
     if (isSuccess(result)) {
-      console.log(`Prometheus API Snapshot Generate Success: ${result.data.name}`)
+      console.log(
+        `Prometheus API Snapshot Generate Success: ${result.data.name}`,
+      );
       return result.data.name;
     } else {
       console.error(

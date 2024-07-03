@@ -1,0 +1,8 @@
+CREATE TABLE backup (
+    id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    name TEXT NOT NULL,
+    size DOUBLE PRECISION,
+    time_zip DOUBLE PRECISION,
+    time_upload DOUBLE PRECISION
+);
