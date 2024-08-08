@@ -13,19 +13,19 @@
     "dev:postgres": "pnpm build && dotenv -- node dist/postgres.js"
   },
   "dependencies": {
-    "@azure/storage-blob": "12.23.0",
-    "discord-api-types": "0.37.91",
+    "@azure/storage-blob": "12.24.0",
+    "discord-api-types": "0.37.93",
     "postgres": "3.4.4",
     "zod": "3.23.8"
   },
   "devDependencies": {
     "@leomotors/config": "0.11.0",
     "@trivago/prettier-plugin-sort-imports": "4.3.0",
-    "@types/node": "20.14.9",
+    "@types/node": "^20.14.14",
     "dotenv-cli": "7.4.2",
     "eslint": "8.57.0",
-    "prettier": "3.3.2",
-    "typescript": "5.5.3"
+    "prettier": "3.3.3",
+    "typescript": "5.5.4"
   },
-  "packageManager": "pnpm@9.4.0"
+  "packageManager": "pnpm@9.7.0"
 }
