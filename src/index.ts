@@ -22,7 +22,8 @@ async function run() {
   const uploadRes = await uploadBalls(archiveRes);
 
   // Cleanup Previous Run
-  await exec("rm -rf out");
+  // Temporary, no cleanup for now, I need testing
+  // await exec("rm -rf out");
 
   const keys = Object.keys(archiveRes);
   const summary = keys

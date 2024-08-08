@@ -21,7 +21,7 @@ export function createTargets(snapshotName: string | undefined): Target[] {
       name: "selfhost",
       path: environment.BACKUP_PATH + "/selfhost",
       exclude:
-        "--exclude=gitea-data --exclude=postgres-data --exclude=prometheus-data --exclude=uptime-kuma-data",
+        "--exclude=gitea-data --exclude=postgres-data --exclude=prometheus-data --exclude=uptime-kuma-data --exclude=jellyfin/cache",
     },
     {
       name: "gitea",
