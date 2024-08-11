@@ -1,6 +1,5 @@
 import { sendMessage } from "./discord.js";
 import { sql } from "./lib/db.js";
-import { exec } from "./lib/exec.js";
 import { limitSize } from "./lib/string.js";
 import { archiveBalls } from "./steps/archive.js";
 import { dumpPostgres } from "./steps/postgres.js";
@@ -21,10 +20,6 @@ async function run() {
   const archiveRes = await archiveBalls(targets);
   const uploadRes = await uploadBalls(archiveRes);
 
-  // Cleanup Previous Run
-  // Temporary, no cleanup for now, I need testing
-  // await exec("rm -rf out");
-
   const keys = Object.keys(archiveRes);
   const summary = keys
     .map(
@@ -40,10 +35,11 @@ async function run() {
     size: s(archiveRes[key]?.fileSize),
     time_zip: s(archiveRes[key]?.timeArchive),
     time_upload: s(uploadRes[key]?.timeUpload),
+    destination: "onedrive",
   }));
 
   try {
-    await sql`INSERT INTO backup ${sql(pgValues, "name", "size", "time_zip", "time_upload")}`;
+    await sql`INSERT INTO backup ${sql(pgValues, "name", "size", "time_zip", "time_upload", "destination")}`;
   } catch (err) {
     console.error("Error saving to database", err);
   }

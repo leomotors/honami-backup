@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 
 import { sendMessage } from "../discord.js";
 import { exec } from "../lib/exec.js";
-import { tarballFolder } from "../tarball.js";
+import { tarExtension, tarballFolder } from "../tarball.js";
 import { Target } from "../targets.js";
 
 export async function archiveBalls(targets: Target[]) {
@@ -18,7 +18,7 @@ export async function archiveBalls(targets: Target[]) {
 
     try {
       const time = await tarballFolder(target);
-      const fileInfo = await fs.stat(`out/${target.name}.tar.gz`);
+      const fileInfo = await fs.stat(`out/${target.name}.${tarExtension}`);
       const fileSizeMB = (fileInfo.size / 2 ** 20).toFixed(4);
 
       const timeTaken = (time / 1000).toFixed(3);

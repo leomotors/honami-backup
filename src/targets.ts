@@ -26,7 +26,6 @@ export function createTargets(snapshotName: string | undefined): Target[] {
     {
       name: "gitea",
       path: environment.BACKUP_PATH + "/selfhost/gitea-data",
-      exclude: environment.EXCLUDE_REPOS_FLAG,
     },
     {
       name: "uptimekuma",

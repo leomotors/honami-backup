@@ -6,11 +6,10 @@ const environmentSchema = z.object({
 
   BACKUP_PATH: z.string(),
 
-  ACCOUNT_NAME: z.string(),
-  ACCOUNT_KEY: z.string(),
-  CONTAINER_NAME: z.string(),
-
-  EXCLUDE_REPOS_FLAG: z.string(),
+  // ACCOUNT_NAME: z.string(),
+  // ACCOUNT_KEY: z.string(),
+  // CONTAINER_NAME: z.string(),
+  RCLONE_FOLDER: z.string(),
 
   PROMETHEUS_URL: z.string().regex(/^http/),
   PROMETHEUS_TOKEN: z.string(),

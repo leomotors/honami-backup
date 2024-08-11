@@ -13,7 +13,6 @@
     "dev:postgres": "pnpm build && dotenv -- node dist/postgres.js"
   },
   "dependencies": {
-    "@azure/storage-blob": "12.24.0",
     "discord-api-types": "0.37.93",
     "postgres": "3.4.4",
     "zod": "3.23.8"

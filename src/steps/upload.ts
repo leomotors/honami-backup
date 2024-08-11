@@ -1,32 +1,17 @@
-import {
-  BlobServiceClient,
-  StorageSharedKeyCredential,
-} from "@azure/storage-blob";
-
 import fs from "node:fs/promises";
 
+import { sendMessage } from "../discord.js";
 import { environment } from "../environment.js";
-
-const sharedKeyCredential = new StorageSharedKeyCredential(
-  environment.ACCOUNT_NAME,
-  environment.ACCOUNT_KEY,
-);
-
-const blobServiceClient = new BlobServiceClient(
-  `https://${environment.ACCOUNT_NAME}.blob.core.windows.net`,
-  sharedKeyCredential,
-);
+import { exec } from "../lib/exec.js";
+import { tarExtension } from "../tarball.js";
 
 export async function uploadBalls(archiveRes: Record<string, unknown>) {
   const result = {} as Record<string, { timeUpload: string }>;
 
-  const containerClient = blobServiceClient.getContainerClient(
-    environment.CONTAINER_NAME,
-  );
-
   for (const targetName of Object.keys(archiveRes)) {
     const start = performance.now();
-    const targetFile = `out/${targetName}.tar.gz`;
+    const fileName = `${targetName}.${tarExtension}`;
+    const targetFile = `./out/${fileName}`;
     const fileInfo = await fs.stat(targetFile);
 
     console.log(
@@ -35,18 +20,21 @@ export async function uploadBalls(archiveRes: Record<string, unknown>) {
       )} MB)...`,
     );
 
-    const blobClient = containerClient.getBlockBlobClient(
-      targetName + ".tar.gz",
+    const { stderr, stdout } = await exec(
+      `rclone sync ${targetFile} ${environment.RCLONE_FOLDER}/${fileName}`,
     );
-    const uploadBlobResponse = await blobClient.uploadFile(targetFile);
+
+    if (stdout || stderr) {
+      await sendMessage(
+        `Error when uploading ${fileName}: stdout=${stdout} stderr=${stderr}`,
+      );
+    }
 
     const duration = ((performance.now() - start) / 1000).toFixed(3);
 
     result[targetName] = { timeUpload: duration };
 
-    console.log(
-      `Uploaded ${targetName} successfully in ${duration} seconds with request id ${uploadBlobResponse.requestId}`,
-    );
+    console.log(`Uploaded ${targetName} successfully in ${duration} seconds`);
   }
 
   return result;
