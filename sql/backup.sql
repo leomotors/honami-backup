@@ -11,7 +11,6 @@ CREATE TABLE backup (
 GRANT USAGE ON SEQUENCE backup_id_seq TO localuser;
 
 -- Migration 1
-
 CREATE TYPE backup_destination AS ENUM ('azureblob', 'onedrive');
 
 ALTER TABLE backup
@@ -21,3 +20,14 @@ UPDATE backup SET destination = 'azureblob';
 
 ALTER TABLE backup
 ALTER COLUMN destination SET NOT NULL;
+
+-- Migration 1.1
+CREATE TYPE compression AS ENUM ('none', 'gzip', 'bzip2');
+
+ALTER TABLE backup
+ADD COLUMN compression compression;
+
+UPDATE backup SET compression = 'gzip';
+
+ALTER TABLE backup
+ALTER COLUMN compression SET NOT NULL;

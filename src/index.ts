@@ -41,10 +41,11 @@ async function run() {
     time_zip: s(archiveRes[key]?.timeArchive),
     time_upload: s(uploadRes[key]?.timeUpload),
     destination: "onedrive",
+    compression: "none",
   }));
 
   try {
-    await sql`INSERT INTO backup ${sql(pgValues, "name", "size", "time_zip", "time_upload", "destination")}`;
+    await sql`INSERT INTO backup ${sql(pgValues, "name", "size", "time_zip", "time_upload", "destination", "compression")}`;
   } catch (err) {
     console.error("Error saving to database", err);
   } finally {
