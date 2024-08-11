@@ -17,8 +17,13 @@ async function run() {
 
   const targets = createTargets(snapshotName);
 
+  const setupTime = performance.now();
+
   const archiveRes = await archiveBalls(targets);
+  const archiveTime = performance.now();
+
   const uploadRes = await uploadBalls(archiveRes);
+  const uploadTime = performance.now();
 
   const keys = Object.keys(archiveRes);
   const summary = keys
@@ -42,16 +47,31 @@ async function run() {
     await sql`INSERT INTO backup ${sql(pgValues, "name", "size", "time_zip", "time_upload", "destination")}`;
   } catch (err) {
     console.error("Error saving to database", err);
+  } finally {
+    await sql.end();
   }
 
-  const duration = ((performance.now() - start) / 1000).toFixed(3);
-  await sendMessage(
-    `# ${new Date().toLocaleString(
-      "th-TH",
-    )} (Total ${duration} seconds)\nPostgresql Dump used ${pgRes} seconds.\n${summary}`,
-  );
+  const sqlTime = performance.now();
 
-  await sql.end();
+  const getDuration = (start: number, end: number) =>
+    ((end - start) / 1000).toFixed(3);
+
+  const setupDuration = getDuration(start, setupTime);
+  const archiveDuration = getDuration(setupTime, archiveTime);
+  const uploadDuration = getDuration(archiveTime, uploadTime);
+  const sqlDuration = getDuration(uploadTime, sqlTime);
+  const totalDuration = getDuration(start, sqlTime);
+
+  const reportMessage = `# Backup Report: ${new Date().toLocaleString("th-TH")}
+## Total Time: ${totalDuration} seconds
+- Setup: ${setupDuration} seconds (Postgres Dump: ${pgRes} seconds, Prometheus Snapshot Name: ${snapshotName})
+- Archive: ${archiveDuration} seconds
+- Upload: ${uploadDuration} seconds
+- SQL: ${sqlDuration} seconds
+## Targets
+${summary}`;
+
+  await sendMessage(reportMessage);
 }
 
 try {
