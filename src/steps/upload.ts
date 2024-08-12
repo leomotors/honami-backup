@@ -21,7 +21,7 @@ export async function uploadBalls(archiveRes: Record<string, unknown>) {
     );
 
     const { stderr, stdout } = await exec(
-      `rclone sync ${targetFile} ${environment.RCLONE_FOLDER}/${fileName}`,
+      `rclone sync ${targetFile} ${environment.RCLONE_FOLDER}`,
     );
 
     if (stdout || stderr) {
