@@ -1,5 +1,5 @@
 import { sendMessage } from "./discord.js";
-import { sql } from "./lib/db.js";
+import { createSQL } from "./lib/db.js";
 import { limitSize } from "./lib/string.js";
 import { archiveBalls } from "./steps/archive.js";
 import { dumpPostgres } from "./steps/postgres.js";
@@ -43,6 +43,8 @@ async function run() {
     destination: "onedrive",
     compression: "none",
   }));
+
+  const sql = createSQL();
 
   try {
     await sql`INSERT INTO backup ${sql(pgValues, "name", "size", "time_zip", "time_upload", "destination", "compression")}`;

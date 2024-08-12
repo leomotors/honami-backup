@@ -1,3 +1,5 @@
 import postgres from "postgres";
 
-export const sql = postgres(process.env.DATABASE_URL as string);
+export function createSQL() {
+  return postgres(process.env.DATABASE_URL as string);
+}

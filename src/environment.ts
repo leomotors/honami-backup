@@ -11,6 +11,8 @@ const environmentSchema = z.object({
   // CONTAINER_NAME: z.string(),
   RCLONE_FOLDER: z.string(),
 
+  DATABASE_URL: z.string(),
+
   PROMETHEUS_URL: z.string().regex(/^http/),
   PROMETHEUS_TOKEN: z.string(),
 });
