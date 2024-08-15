@@ -19,13 +19,13 @@ export async function archiveBalls(targets: Target[]) {
     try {
       const time = await tarballFolder(target);
       const fileInfo = await fs.stat(`out/${target.name}.${tarExtension}`);
-      const fileSizeMB = (fileInfo.size / 2 ** 20).toFixed(4);
+      const fileSizeMiB = (fileInfo.size / 2 ** 20).toFixed(4);
 
       const timeTaken = (time / 1000).toFixed(3);
-      result[target.name] = { fileSize: fileSizeMB, timeArchive: timeTaken };
+      result[target.name] = { fileSize: fileSizeMiB, timeArchive: timeTaken };
 
       console.log(
-        `Successfully archived ${target.name} (${fileSizeMB} MB) in ${timeTaken} seconds`,
+        `Successfully archived ${target.name} (${fileSizeMiB} MB) in ${timeTaken} seconds`,
       );
     } catch (err) {
       await sendMessage(`Failed to archive ${target.name}: ${err}`);

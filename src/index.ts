@@ -25,21 +25,22 @@ async function run() {
   const uploadRes = await uploadBalls(archiveRes);
   const uploadTime = performance.now();
 
+  const s = (str: string | undefined) => (str ? +str : null);
+  const d1000 = (num: number | undefined) => (num ? num / 1000 : null);
+
   const keys = Object.keys(archiveRes);
   const summary = keys
     .map(
       (key) =>
-        `**${key}**: ${archiveRes[key]?.fileSize} MB, ${archiveRes[key]?.timeArchive} seconds archive, ${uploadRes[key]?.timeUpload} seconds upload`,
+        `**${key}**: ${archiveRes[key]?.fileSize} MB, ${archiveRes[key]?.timeArchive} seconds archive, ${d1000(uploadRes[key]?.timeUpload)} seconds upload`,
     )
     .join("\n");
-
-  const s = (str: string | undefined) => (str ? +str : null);
 
   const pgValues = keys.map((key) => ({
     name: key,
     size: s(archiveRes[key]?.fileSize),
     time_zip: s(archiveRes[key]?.timeArchive),
-    time_upload: s(uploadRes[key]?.timeUpload),
+    time_upload: d1000(uploadRes[key]?.timeUpload),
     destination: "onedrive",
     compression: "none",
   }));
