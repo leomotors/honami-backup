@@ -32,7 +32,7 @@ async function run() {
   const summary = keys
     .map(
       (key) =>
-        `**${key}**: ${archiveRes[key]?.fileSize} MB, ${archiveRes[key]?.timeArchive} seconds archive, ${d1000(uploadRes[key]?.timeUpload)} seconds upload`,
+        `**${key}**: ${archiveRes[key]?.fileSize} MB, ${archiveRes[key]?.timeArchive} seconds archive, ${d1000(uploadRes[key]?.timeUpload)?.toFixed(3)} seconds upload`,
     )
     .join("\n");
 
