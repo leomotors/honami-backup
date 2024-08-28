@@ -30,6 +30,7 @@ export function createTargets(snapshotName: string | undefined): Target[] {
     {
       name: "uptimekuma",
       path: environment.BACKUP_PATH + "/selfhost/uptime-kuma-data",
+      exclude: "--exclude=kuma.db-wal",
     },
     {
       name: "pgdump",
