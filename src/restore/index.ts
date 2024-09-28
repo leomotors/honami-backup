@@ -1,3 +1,4 @@
+import { environment } from "../environment.js";
 import { exec } from "../lib/exec.js";
 import { tarExtension } from "../tarball.js";
 import { createTargets } from "../targets.js";
@@ -10,6 +11,11 @@ console.log(`Beginning Restore ${new Date().toLocaleString("th-TH")}`);
 const targets = createTargets(undefined);
 
 await downloadBalls();
+
+targets.push({
+  name: "prometheus",
+  path: environment.BACKUP_PATH + "/selfhost/prometheus-data",
+});
 
 for (const target of targets) {
   if (target.name === "pgdump") {
