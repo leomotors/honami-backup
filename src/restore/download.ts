@@ -17,7 +17,7 @@ export async function downloadBalls() {
   const durationMs = performance.now() - start;
   const duration = (durationMs / 1000).toFixed(3);
 
-  const { stdout: folderSizeOutput } = await exec("du -sh download");
+  const { stdout: folderSizeOutput } = await exec("du -s download");
   // In GiB
   const folderSize = +folderSizeOutput.split("\t")[0]! / 1048576;
 
