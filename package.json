@@ -8,6 +8,7 @@
     "build": "tsc",
     "dev": "pnpm build && pnpm start",
     "start": "dotenv -- node dist/index.js",
+    "restore": "dotenv -- node dist/restore/index.js",
     "lint": "eslint src",
     "format": "eslint src --fix",
     "dev:postgres": "pnpm build && dotenv -- node dist/postgres.js"
