@@ -13,7 +13,9 @@ export async function tarballFolder(target: Target) {
 
   const excludeFlags = target.exclude.map((e) => `--exclude=${e}`).join(" ");
 
-  await exec(`tar -cf ${targetTarName} ${excludeFlags} -C ${target.path} .`);
+  await exec(
+    `tar ${target.gzip ? "-czf" : "-cf"} ${targetTarName} ${excludeFlags} -C ${target.path} .`,
+  );
 
   await exec(`chown -R ${environment.UID}:${environment.GID} ${targetTarName}`);
 
