@@ -1,6 +1,11 @@
 import { z } from "zod";
 
-import { Config, isPostgresEnabled, targetSchema } from "./config.js";
+import {
+  Config,
+  isPostgresEnabled,
+  isPrometheusEnabled,
+  targetSchema,
+} from "./config.js";
 
 export function createTargets(
   config: Config,
@@ -13,16 +18,16 @@ export function createTargets(
       name: "pgdump",
       path: "./pgdump",
       exclude: [],
-      gzip: true,
+      gzip: config.postgres.compress,
     });
   }
 
-  if (snapshotName) {
+  if (isPrometheusEnabled(config) && snapshotName) {
     targets.push({
       name: "prometheus",
-      path: `${config.prometheus?.folderPath}/snapshots/${snapshotName}`,
+      path: `${config.prometheus.folderPath}/snapshots/${snapshotName}`,
       exclude: [],
-      gzip: false,
+      gzip: config.prometheus.compress,
     });
   }
 

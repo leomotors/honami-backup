@@ -17,11 +17,13 @@ export const prometheusSchema = z.object({
   url: z.string(),
   token: z.string(),
   folderPath: z.string(),
+  compress: z.boolean().default(false),
 });
 
 export const pgSchema = z.object({
   containerName: z.string(),
   rootUsername: z.string().default("postgres"),
+  compress: z.boolean().default(true),
 });
 
 export const configSchema = z.object({
