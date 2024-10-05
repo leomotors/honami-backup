@@ -1,0 +1,9 @@
+targets:
+  - name: apps
+    path: /backup/test/apps
+  - name: selfhost
+    path: /backup/test/selfhost
+    gzip: true
+postgres:
+  containerName: waifu-bot-database-1
+  rootUsername: username

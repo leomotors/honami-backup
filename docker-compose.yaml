@@ -1,0 +1,13 @@
+# For Local Testing
+services:
+  honami-backup:
+    container_name: honami-backup
+    image: honami-backup:local
+    volumes:
+      # Must be rw because this is how rclone works
+      - /Users/leomotors/.config/rclone:/root/.config/rclone:rw
+      - ./test:/backup/test:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file:
+      - .env
+      # CONFIG_PATH=/backup/test/targets.yaml

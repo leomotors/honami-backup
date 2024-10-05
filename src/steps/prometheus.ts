@@ -1,4 +1,4 @@
-import { environment } from "../environment.js";
+import { ConfigPrometheusEnabled } from "../config.js";
 import { getDateStr } from "../lib/date.js";
 import { exec } from "../lib/exec.js";
 
@@ -21,19 +21,17 @@ export function isSuccess(obj: object): obj is SnapshotSuccess {
   );
 }
 
-export async function snapshotPrometheus() {
+export async function snapshotPrometheus(config: ConfigPrometheusEnabled) {
   try {
     // Cleanup Previous Snapshots
-    await exec(
-      `rm -rf ${environment.BACKUP_PATH}/selfhost/prometheus-data/snapshots`,
-    );
+    await exec(`rm -rf ${config.prometheus.folderPath}/snapshots`);
 
     const result = await fetch(
-      `${environment.PROMETHEUS_URL}/api/v1/admin/tsdb/snapshot`,
+      `${config.prometheus.url}/api/v1/admin/tsdb/snapshot`,
       {
         method: "POST",
         headers: {
-          Authorization: environment.PROMETHEUS_TOKEN,
+          Authorization: config.prometheus.token,
         },
         body: JSON.stringify({ name: getDateStr() }),
       },

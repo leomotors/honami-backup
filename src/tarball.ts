@@ -1,16 +1,21 @@
+import { Target } from "./config.js";
+import { environment } from "./environment.js";
 import { exec } from "./lib/exec.js";
-import { Target } from "./targets.js";
 
-export const tarExtension = "tar";
+export function tarExtension(gzip: boolean) {
+  return gzip ? "tar.gz" : "tar";
+}
 
 export async function tarballFolder(target: Target) {
   const start = performance.now();
 
-  await exec(
-    `sudo tar -cf out/${target.name}.${tarExtension} ${target.exclude || ""} -C ${target.path} .`,
-  );
+  const targetTarName = `out/${target.name}.${tarExtension(target.gzip)}`;
 
-  await exec(`sudo chown -R 1000:1003 out/${target.name}.${tarExtension}`);
+  const excludeFlags = target.exclude.map((e) => `--exclude=${e}`).join(" ");
 
-  return performance.now() - start;
+  await exec(`tar -cf ${targetTarName} ${excludeFlags} -C ${target.path} .`);
+
+  await exec(`chown -R ${environment.UID}:${environment.GID} ${targetTarName}`);
+
+  return { timeMs: performance.now() - start, targetTarName };
 }

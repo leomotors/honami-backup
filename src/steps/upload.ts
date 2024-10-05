@@ -3,15 +3,16 @@ import fs from "node:fs/promises";
 import { sendMessage } from "../discord.js";
 import { environment } from "../environment.js";
 import { exec } from "../lib/exec.js";
-import { tarExtension } from "../tarball.js";
+
+import { ArchiveResult } from "./archive.js";
 
 async function uploadTarget(
   targetName: string,
+  targetArchiveResult: ArchiveResult[string],
   resultFn: (durationMs: number) => void,
 ) {
   const start = performance.now();
-  const fileName = `${targetName}.${tarExtension}`;
-  const targetFile = `./out/${fileName}`;
+  const targetFile = targetArchiveResult.outputTarPath;
   const fileInfo = await fs.stat(targetFile);
 
   console.log(
@@ -26,7 +27,7 @@ async function uploadTarget(
 
   if (stdout || stderr) {
     await sendMessage(
-      `Error when uploading ${fileName}: stdout=${stdout} stderr=${stderr}`,
+      `Error when uploading ${targetFile}: stdout=${stdout} stderr=${stderr}`,
     );
   }
 
@@ -40,8 +41,12 @@ async function uploadTarget(
 
 const parallelUploads = 10;
 
-export async function uploadBalls(archiveRes: Record<string, unknown>) {
-  const result = {} as Record<string, { timeUpload: number }>;
+export type UploadResult = Record<string, { timeUpload: number }>;
+
+export async function uploadBalls(
+  archiveRes: ArchiveResult,
+): Promise<UploadResult> {
+  const result = {} as UploadResult;
 
   const targetNames = Object.keys(archiveRes);
 
@@ -52,6 +57,7 @@ export async function uploadBalls(archiveRes: Record<string, unknown>) {
         .map((targetName) =>
           uploadTarget(
             targetName,
+            archiveRes[targetName]!,
             (duration) => (result[targetName] = { timeUpload: duration }),
           ),
         ),

@@ -1,7 +1,28 @@
+import { ConfigPostgresEnabled } from "../config.js";
 import { getDateStr } from "../lib/date.js";
 import { exec } from "../lib/exec.js";
 
-export async function dumpPostgres() {
+async function cleanupPostgres(config: ConfigPostgresEnabled) {
+  const { stdout } = await exec(
+    `docker exec -t ${config.postgres.containerName} ls -1 /var/lib/postgresql/data`,
+  );
+  const sqlFiles = stdout
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((f) => f.endsWith(".sql"));
+
+  console.log(
+    `[Postgres] Cleaning up previous dump - ${sqlFiles.length} files`,
+  );
+
+  for (const file of sqlFiles) {
+    await exec(
+      `docker exec -t ${config.postgres.containerName} rm /var/lib/postgresql/data/${file}`,
+    );
+  }
+}
+
+export async function dumpPostgres(config: ConfigPostgresEnabled) {
   const start = performance.now();
 
   await exec("rm -rf pgdump");
@@ -9,7 +30,7 @@ export async function dumpPostgres() {
   const dateStr = getDateStr();
 
   const { stdout: result } = await exec(
-    `sudo docker exec -t postgres psql -P pager=off -U postgres -c "SELECT datname FROM pg_database"`,
+    `docker exec -t ${config.postgres.containerName} psql -P pager=off -U ${config.postgres.rootUsername} -d postgres -c "SELECT datname FROM pg_database"`,
   );
 
   const databases = result
@@ -21,17 +42,15 @@ export async function dumpPostgres() {
   console.log("Databases =", databases);
 
   // Cleanup Previous Run
-  await exec(
-    `sudo docker exec -t postgres rm -f "/var/lib/postgresql/data/*.sql"`,
-  );
+  await cleanupPostgres(config);
 
   for (const dat of databases) {
     const fileName = `${dat}-${dateStr}.sql`;
     await exec(
-      `sudo docker exec -t postgres pg_dump -U postgres -d ${dat} -f /var/lib/postgresql/data/${fileName}`,
+      `docker exec -t ${config.postgres.containerName} pg_dump -U ${config.postgres.rootUsername} -d ${dat} -f /var/lib/postgresql/data/${fileName}`,
     );
     await exec(
-      `sudo docker cp postgres:/var/lib/postgresql/data/${fileName} ./pgdump/${fileName}`,
+      `docker cp ${config.postgres.containerName}:/var/lib/postgresql/data/${fileName} ./pgdump/${fileName}`,
     );
   }
 

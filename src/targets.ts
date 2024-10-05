@@ -1,47 +1,28 @@
-/**
- * environment.BACKUP_PATH + "/apps",
-  environment.BACKUP_PATH + "/selfhost",
-  "./pgdump",
- */
-import { environment } from "./environment.js";
+import { z } from "zod";
 
-export type Target = {
-  name: string;
-  path: string;
-  exclude?: string;
-};
+import { Config, isPostgresEnabled, targetSchema } from "./config.js";
 
-export function createTargets(snapshotName: string | undefined): Target[] {
-  const targets = [
-    {
-      name: "apps",
-      path: environment.BACKUP_PATH + "/apps",
-    },
-    {
-      name: "selfhost",
-      path: environment.BACKUP_PATH + "/selfhost",
-      exclude:
-        "--exclude=gitea-data --exclude=postgres-data --exclude=prometheus-data --exclude=uptime-kuma-data --exclude=jellyfin/cache",
-    },
-    {
-      name: "gitea",
-      path: environment.BACKUP_PATH + "/selfhost/gitea-data",
-    },
-    {
-      name: "uptimekuma",
-      path: environment.BACKUP_PATH + "/selfhost/uptime-kuma-data",
-      exclude: "--exclude=kuma.db-wal",
-    },
-    {
-      name: "pgdump",
+export function createTargets(
+  config: Config,
+  snapshotName: string | undefined,
+): z.infer<typeof targetSchema>[] {
+  const targets = config.targets;
+
+  if (isPostgresEnabled(config)) {
+    targets.push({
+      name: "postgres",
       path: "./pgdump",
-    },
-  ];
+      exclude: [],
+      gzip: true,
+    });
+  }
 
   if (snapshotName) {
     targets.push({
       name: "prometheus",
-      path: `${environment.BACKUP_PATH}/selfhost/prometheus-data/snapshots/${snapshotName}`,
+      path: `${config.prometheus?.folderPath}/snapshots/${snapshotName}`,
+      exclude: [],
+      gzip: false,
     });
   }
 

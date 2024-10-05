@@ -1,6 +1,6 @@
 {
   "name": "honami-backup",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "main": "dist/index.js",
@@ -8,7 +8,6 @@
     "build": "tsc",
     "dev": "pnpm build && pnpm start",
     "start": "dotenv -- node dist/index.js",
-    "restore": "dotenv -- node dist/restore/index.js",
     "lint": "eslint src",
     "format": "eslint src --fix",
     "dev:postgres": "pnpm build && dotenv -- node dist/postgres.js"
@@ -16,6 +15,7 @@
   "dependencies": {
     "discord-api-types": "^0.37.101",
     "postgres": "^3.4.4",
+    "yaml": "2.5.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {

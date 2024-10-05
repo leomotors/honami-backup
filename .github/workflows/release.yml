@@ -1,0 +1,53 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - "*.*"
+
+jobs:
+  tag-release:
+    name: Publish Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Publish Release
+        uses: leomotors/auto-publish-release@main
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+          title: "Honami Backup"
+
+  docker-push:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+        name: Check out code
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ghcr.io/leomotors/honami-backup:latest,ghcr.io/leomotors/honami-backup:${{ github.ref_name }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

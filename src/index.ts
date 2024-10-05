@@ -1,3 +1,8 @@
+import {
+  isPostgresEnabled,
+  isPrometheusEnabled,
+  readConfig,
+} from "./config.js";
 import { sendMessage } from "./discord.js";
 import { createSQL } from "./lib/db.js";
 import { limitSize } from "./lib/string.js";
@@ -8,41 +13,49 @@ import { uploadBalls } from "./steps/upload.js";
 import { createTargets } from "./targets.js";
 
 async function run() {
-  console.log(`\nRUN ${new Date().toLocaleString("th-TH")}`);
+  console.log(`\n\nRUN ${new Date().toLocaleString("th-TH")}`);
 
   const start = performance.now();
 
-  const pgRes = await dumpPostgres();
-  const snapshotName = await snapshotPrometheus();
+  // Step 0: Read config and dump for postgres and prometheus
+  const config = await readConfig();
 
-  const targets = createTargets(snapshotName);
+  const pgRes = isPostgresEnabled(config)
+    ? await dumpPostgres(config)
+    : "(DISABLED)";
+  const snapshotName = isPrometheusEnabled(config)
+    ? await snapshotPrometheus(config)
+    : undefined;
+
+  const targets = createTargets(config, snapshotName);
 
   const setupTime = performance.now();
 
+  // Step 1: Archive
   const archiveRes = await archiveBalls(targets);
   const archiveTime = performance.now();
 
+  // Step 2: Upload
   const uploadRes = await uploadBalls(archiveRes);
   const uploadTime = performance.now();
 
-  const s = (str: string | undefined) => (str ? +str : null);
   const d1000 = (num: number | undefined) => (num ? num / 1000 : null);
 
   const keys = Object.keys(archiveRes);
   const summary = keys
     .map(
       (key) =>
-        `**${key}**: ${archiveRes[key]?.fileSize} MB, ${archiveRes[key]?.timeArchive} seconds archive, ${d1000(uploadRes[key]?.timeUpload)?.toFixed(3)} seconds upload`,
+        `**${key}**: ${archiveRes[key]!.fileSize.toFixed(4)} MB, ${archiveRes[key]!.timeArchive.toFixed(3)} seconds archive, ${d1000(uploadRes[key]?.timeUpload)?.toFixed(3)} seconds upload`,
     )
     .join("\n");
 
   const pgValues = keys.map((key) => ({
     name: key,
-    size: s(archiveRes[key]?.fileSize),
-    time_zip: s(archiveRes[key]?.timeArchive),
+    size: archiveRes[key]!.fileSize,
+    time_zip: archiveRes[key]!.timeArchive,
     time_upload: d1000(uploadRes[key]?.timeUpload),
     destination: "onedrive",
-    compression: "none",
+    compression: archiveRes[key]!.gzip ? "gzip" : "none",
   }));
 
   const sql = createSQL();
@@ -68,7 +81,7 @@ async function run() {
 
   const reportMessage = `# Backup Report: ${new Date().toLocaleString("th-TH")}
 ## Total Time: ${totalDuration} seconds
-- Setup: ${setupDuration} seconds (Postgres Dump: ${pgRes} seconds, Prometheus Snapshot Name: ${snapshotName})
+- Setup: ${setupDuration} seconds (Postgres Dump: ${pgRes} seconds, Prometheus Snapshot Name: ${snapshotName ?? "(DISABLED)"})
 - Archive: ${archiveDuration} seconds
 - Upload: ${uploadDuration} seconds
 - SQL: ${sqlDuration} seconds
