@@ -10,7 +10,7 @@ export function createTargets(
 
   if (isPostgresEnabled(config)) {
     targets.push({
-      name: "postgres",
+      name: "pgdump",
       path: "./pgdump",
       exclude: [],
       gzip: true,
