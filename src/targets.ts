@@ -18,7 +18,7 @@ export function createTargets(
       name: "pgdump",
       path: "./pgdump",
       exclude: [],
-      gzip: config.postgres.compress,
+      uploadType: config.postgres.uploadType,
     });
   }
 
@@ -27,7 +27,7 @@ export function createTargets(
       name: "prometheus",
       path: `${config.prometheus.folderPath}/snapshots/${snapshotName}`,
       exclude: [],
-      gzip: config.prometheus.compress,
+      uploadType: config.prometheus.uploadType,
     });
   }
 

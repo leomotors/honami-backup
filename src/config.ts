@@ -4,11 +4,13 @@ import { z } from "zod";
 
 import { environment } from "./environment.js";
 
+export const uploadType = z.enum(["folder", "tar", "tar.gz"]);
+
 export const targetSchema = z.object({
   name: z.string().regex(/^[a-zA-Z0-9-_]+$/),
   path: z.string(),
   exclude: z.array(z.string()).default([]),
-  gzip: z.boolean().default(false),
+  uploadType: uploadType.default("tar"),
 });
 
 export type Target = z.infer<typeof targetSchema>;
@@ -17,13 +19,13 @@ export const prometheusSchema = z.object({
   url: z.string(),
   token: z.string(),
   folderPath: z.string(),
-  compress: z.boolean().default(false),
+  uploadType: uploadType.default("folder"),
 });
 
 export const pgSchema = z.object({
   containerName: z.string(),
   rootUsername: z.string().default("postgres"),
-  compress: z.boolean().default(true),
+  uploadType: uploadType.default("tar.gz"),
 });
 
 export const configSchema = z.object({

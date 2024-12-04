@@ -6,6 +6,19 @@ import { exec } from "../lib/exec.js";
 
 import { ArchiveResult } from "./archive.js";
 
+function getRCloneCommand(
+  targetName: string,
+  targetFile: string,
+  rcloneFolder: string,
+  archiveResult: ArchiveResult[string],
+) {
+  if (archiveResult.asFolder) {
+    return `rclone sync ${targetFile} ${rcloneFolder}/${targetName}`;
+  } else {
+    return `rclone sync ${targetFile} ${rcloneFolder}`;
+  }
+}
+
 async function uploadTarget(
   targetName: string,
   targetArchiveResult: ArchiveResult[string],
@@ -16,13 +29,19 @@ async function uploadTarget(
   const fileInfo = await fs.stat(targetFile);
 
   console.log(
-    `Uploading ${targetName} (File Size: ${(fileInfo.size / 2 ** 20).toFixed(
-      4,
-    )} MB)...`,
+    `Uploading ${targetName} (File Size (fs.stat): ${(
+      fileInfo.size /
+      2 ** 20
+    ).toFixed(4)} MB)...`,
   );
 
   const { stderr, stdout } = await exec(
-    `rclone sync ${targetFile} ${environment.RCLONE_FOLDER}`,
+    getRCloneCommand(
+      targetName,
+      targetFile,
+      environment.RCLONE_FOLDER,
+      targetArchiveResult,
+    ),
   );
 
   if (stdout || stderr) {

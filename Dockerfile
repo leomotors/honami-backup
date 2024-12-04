@@ -2,7 +2,7 @@
 # ? Builder: Complile TypeScript to JS
 # ? -------------------------
 
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -21,7 +21,7 @@ RUN pnpm build
 # ? Deps-prod: Obtaining node_moules that contains just production dependencies
 # ? -------------------------
 
-FROM node:20-alpine AS deps-prod
+FROM node:22-alpine AS deps-prod
 
 WORKDIR /app
 
@@ -33,7 +33,7 @@ RUN pnpm i --frozen-lockfile --prod
 # ? Runner: Production to run
 # ? -------------------------
 
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 
 RUN apk add --no-cache docker rclone
 

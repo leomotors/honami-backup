@@ -54,7 +54,7 @@ export async function dumpPostgres(config: ConfigPostgresEnabled) {
     );
   }
 
-  const duration = ((performance.now() - start) / 1000).toFixed(3);
+  const duration = (performance.now() - start) / 1000;
   console.log(`Successfully dumped postgres in ${duration} seconds`);
   return duration;
 }

@@ -3,7 +3,7 @@ targets:
     path: /backup/test/apps
   - name: selfhost
     path: /backup/test/selfhost
-    gzip: true
+    uploadType: folder
 postgres:
   containerName: waifu-bot-database-1
   rootUsername: username

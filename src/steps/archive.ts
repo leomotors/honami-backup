@@ -6,6 +6,8 @@ import { exec } from "../lib/exec.js";
 import { withRetries } from "../lib/retries.js";
 import { tarballFolder } from "../tarball.js";
 
+import { getFolderSize } from "./folder.js";
+
 const retries = 3;
 
 export type ArchiveResult = Record<
@@ -19,6 +21,8 @@ export type ArchiveResult = Record<
     outputTarPath: string;
     // Gzip
     gzip: boolean;
+    // As Folder
+    asFolder: boolean;
   }
 >;
 
@@ -34,13 +38,17 @@ export async function archiveBalls(targets: Target[]): Promise<ArchiveResult> {
       async () => {
         const { targetTarName, timeMs } = await tarballFolder(target);
         const fileInfo = await fs.stat(targetTarName);
-        const fileSizeMiB = fileInfo.size / 2 ** 20;
+        const fileSizeMiB =
+          target.uploadType === "folder"
+            ? (await getFolderSize(targetTarName)) / 2 ** 20
+            : fileInfo.size / 2 ** 20;
 
         result[target.name] = {
           fileSize: fileSizeMiB,
           timeArchive: timeMs / 1000,
           outputTarPath: targetTarName,
-          gzip: target.gzip,
+          gzip: target.uploadType === "tar.gz",
+          asFolder: target.uploadType === "folder",
         };
 
         const timeTakenSecStr = (timeMs / 1000).toFixed(3);

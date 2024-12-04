@@ -23,6 +23,7 @@ export function isSuccess(obj: object): obj is SnapshotSuccess {
 
 export async function snapshotPrometheus(config: ConfigPrometheusEnabled) {
   try {
+    const start = performance.now();
     // Cleanup Previous Snapshots
     await exec(`rm -rf ${config.prometheus.folderPath}/snapshots`);
 
@@ -41,7 +42,10 @@ export async function snapshotPrometheus(config: ConfigPrometheusEnabled) {
       console.log(
         `Prometheus API Snapshot Generate Success: ${result.data.name}`,
       );
-      return result.data.name;
+      return {
+        timeSnapshot: (performance.now() - start) / 1000,
+        snapshotName: result.data.name,
+      };
     } else {
       console.error(
         `Prometheus API Invalid Response: ${JSON.stringify(result, null, 4)}`,

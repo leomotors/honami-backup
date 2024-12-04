@@ -2,6 +2,11 @@
 
 Note: Before 2.0.0 is not there
 
+## [3.0.0] - 2024-12-04
+
+- chore: bump deps
+- feat: sync folder
+
 ## [2.1.0] - 2024-10-05
 
 - feat: options to compress prometheus and postgres

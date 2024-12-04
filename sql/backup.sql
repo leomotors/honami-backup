@@ -31,3 +31,13 @@ UPDATE backup SET compression = 'gzip';
 
 ALTER TABLE backup
 ALTER COLUMN compression SET NOT NULL;
+
+-- Migration 2
+CREATE TABLE backup_setup (
+    id        SERIAL PRIMARY KEY,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    name      TEXT NOT NULL,
+    time_s    DOUBLE PRECISION
+);
+
+GRANT USAGE ON SEQUENCE backup_setup_id_seq TO localuser;

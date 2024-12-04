@@ -20,14 +20,12 @@ async function run() {
   // Step 0: Read config and dump for postgres and prometheus
   const config = await readConfig();
 
-  const pgRes = isPostgresEnabled(config)
-    ? await dumpPostgres(config)
-    : "(DISABLED)";
-  const snapshotName = isPrometheusEnabled(config)
+  const pgRes = isPostgresEnabled(config) ? await dumpPostgres(config) : NaN;
+  const snapshotResult = isPrometheusEnabled(config)
     ? await snapshotPrometheus(config)
     : undefined;
 
-  const targets = createTargets(config, snapshotName);
+  const targets = createTargets(config, snapshotResult?.snapshotName);
 
   const setupTime = performance.now();
 
@@ -62,6 +60,14 @@ async function run() {
 
   try {
     await sql`INSERT INTO backup ${sql(pgValues, "name", "size", "time_zip", "time_upload", "destination", "compression")}`;
+
+    if (!isNaN(pgRes)) {
+      await sql`INSERT INTO backup_setup (name, time_s) VALUES ('pgdump', ${pgRes})`;
+    }
+
+    if (snapshotResult) {
+      await sql`INSERT INTO backup_setup (name, time_s) VALUES ('prometheus-snapshot', ${snapshotResult.timeSnapshot})`;
+    }
   } catch (err) {
     console.error("Error saving to database", err);
   } finally {
@@ -81,7 +87,7 @@ async function run() {
 
   const reportMessage = `# Backup Report: ${new Date().toLocaleString("th-TH")}
 ## Total Time: ${totalDuration} seconds
-- Setup: ${setupDuration} seconds (Postgres Dump: ${pgRes} seconds, Prometheus Snapshot Name: ${snapshotName ?? "(DISABLED)"})
+- Setup: ${setupDuration} seconds (Postgres Dump: ${isNaN(pgRes) ? "(DISABLED)" : pgRes.toFixed(3)} seconds, Prometheus Snapshot Name: ${snapshotResult ? `${snapshotResult.snapshotName} (${snapshotResult.timeSnapshot.toFixed(3)} seconds)` : "(DISABLED)"})
 - Archive: ${archiveDuration} seconds
 - Upload: ${uploadDuration} seconds
 - SQL: ${sqlDuration} seconds
