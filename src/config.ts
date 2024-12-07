@@ -11,6 +11,7 @@ export const targetSchema = z.object({
   path: z.string(),
   exclude: z.array(z.string()).default([]),
   uploadType: uploadType.default("tar"),
+  checksum: z.boolean().default(true),
 });
 
 export type Target = z.infer<typeof targetSchema>;

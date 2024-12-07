@@ -1,4 +1,7 @@
+import { z } from "zod";
+
 import {
+  type uploadType as UploadType,
   isPostgresEnabled,
   isPrometheusEnabled,
   readConfig,
@@ -47,19 +50,32 @@ async function run() {
     )
     .join("\n");
 
+  function getUploadType(uploadType: z.infer<typeof UploadType>) {
+    switch (uploadType) {
+      case "folder":
+        return "folder";
+      case "tar":
+        return "tarball";
+      case "tar.gz":
+        return "tarball_gzip";
+      default:
+        return null;
+    }
+  }
+
   const pgValues = keys.map((key) => ({
     name: key,
     size: archiveRes[key]!.fileSize,
     time_zip: archiveRes[key]!.timeArchive,
     time_upload: d1000(uploadRes[key]?.timeUpload),
     destination: "onedrive",
-    compression: archiveRes[key]!.gzip ? "gzip" : "none",
+    upload_type: getUploadType(archiveRes[key]!.target.uploadType),
   }));
 
   const sql = createSQL();
 
   try {
-    await sql`INSERT INTO backup ${sql(pgValues, "name", "size", "time_zip", "time_upload", "destination", "compression")}`;
+    await sql`INSERT INTO backup ${sql(pgValues, "name", "size", "time_zip", "time_upload", "destination", "upload_type")}`;
 
     if (!isNaN(pgRes)) {
       await sql`INSERT INTO backup_setup (name, time_s) VALUES ('pgdump', ${pgRes})`;

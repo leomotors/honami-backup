@@ -12,10 +12,12 @@ function getRCloneCommand(
   rcloneFolder: string,
   archiveResult: ArchiveResult[string],
 ) {
-  if (archiveResult.asFolder) {
-    return `rclone sync ${targetFile} ${rcloneFolder}/${targetName}`;
+  const checksumFlag = archiveResult.target.checksum ? "--checksum" : "";
+
+  if (archiveResult.target.uploadType === "folder") {
+    return `rclone sync ${checksumFlag} --fast-list ${targetFile} ${rcloneFolder}/${targetName}`;
   } else {
-    return `rclone sync ${targetFile} ${rcloneFolder}`;
+    return `rclone sync ${checksumFlag} ${targetFile} ${rcloneFolder}`;
   }
 }
 

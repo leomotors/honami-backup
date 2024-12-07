@@ -41,3 +41,12 @@ CREATE TABLE backup_setup (
 );
 
 GRANT USAGE ON SEQUENCE backup_setup_id_seq TO localuser;
+
+-- Migration 2.1
+ALTER TABLE backup
+    ALTER COLUMN compression DROP NOT NULL;
+
+CREATE TYPE upload_type AS ENUM ('folder', 'tarball', 'tarball_gzip', 'tarball_bzip2', 'tarball_xz');
+
+ALTER TABLE backup
+    ADD COLUMN upload_type upload_type;

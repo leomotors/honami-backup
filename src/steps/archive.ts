@@ -19,10 +19,8 @@ export type ArchiveResult = Record<
     timeArchive: number;
     // Output File
     outputTarPath: string;
-    // Gzip
-    gzip: boolean;
-    // As Folder
-    asFolder: boolean;
+    // Target Object
+    target: Target;
   }
 >;
 
@@ -47,8 +45,7 @@ export async function archiveBalls(targets: Target[]): Promise<ArchiveResult> {
           fileSize: fileSizeMiB,
           timeArchive: timeMs / 1000,
           outputTarPath: targetTarName,
-          gzip: target.uploadType === "tar.gz",
-          asFolder: target.uploadType === "folder",
+          target: target,
         };
 
         const timeTakenSecStr = (timeMs / 1000).toFixed(3);

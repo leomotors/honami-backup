@@ -19,6 +19,7 @@ export function createTargets(
       path: "./pgdump",
       exclude: [],
       uploadType: config.postgres.uploadType,
+      checksum: true,
     });
   }
 
@@ -28,6 +29,7 @@ export function createTargets(
       path: `${config.prometheus.folderPath}/snapshots/${snapshotName}`,
       exclude: [],
       uploadType: config.prometheus.uploadType,
+      checksum: true,
     });
   }
 
