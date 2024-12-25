@@ -2,6 +2,11 @@
 
 Note: Before 2.0.0 is not there
 
+## [3.2.0] - 2024-12-25
+
+- chore: bump deps
+- fix: check for message length before sending to discord
+
 ## [3.1.0] - 2024-12-07
 
 - feat: add checksum and fast-list flag
