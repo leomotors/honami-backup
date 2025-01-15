@@ -1,9 +1,15 @@
 targets:
   - name: apps
     path: /backup/test/apps
+    exclude: [ignored]
   - name: selfhost
     path: /backup/test/selfhost
     uploadType: folder
+  - name: folder3
+    path: /backup/test/folder3
+    uploadType: folder
+    exclude: [.ignore-me]
+    checksum: false
 postgres:
   containerName: waifu-bot-database-1
   rootUsername: username

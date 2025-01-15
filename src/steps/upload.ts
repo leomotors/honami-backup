@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 
 import { sendMessage } from "../discord.js";
 import { environment } from "../environment.js";
+import { createExcludeFlagsForRClone } from "../lib/exclude.js";
 import { exec } from "../lib/exec.js";
 
 import { ArchiveResult } from "./archive.js";
@@ -15,7 +16,10 @@ function getRCloneCommand(
   const checksumFlag = archiveResult.target.checksum ? "--checksum" : "";
 
   if (archiveResult.target.uploadType === "folder") {
-    return `rclone sync ${checksumFlag} --fast-list ${targetFile} ${rcloneFolder}/${targetName}`;
+    const excludeFlags = createExcludeFlagsForRClone(
+      archiveResult.target.exclude,
+    );
+    return `rclone sync ${checksumFlag} --fast-list ${targetFile} ${rcloneFolder}/${targetName} ${excludeFlags}`;
   } else {
     return `rclone sync ${checksumFlag} ${targetFile} ${rcloneFolder}`;
   }

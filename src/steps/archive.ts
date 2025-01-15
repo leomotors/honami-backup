@@ -4,7 +4,7 @@ import { Target } from "../config.js";
 import { sendMessage } from "../discord.js";
 import { exec } from "../lib/exec.js";
 import { withRetries } from "../lib/retries.js";
-import { tarballFolder } from "../tarball.js";
+import { tarballFolder } from "../lib/tarball.js";
 
 import { getFolderSize } from "./folder.js";
 

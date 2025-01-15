@@ -2,6 +2,10 @@
 
 Note: Before 2.0.0 is not there
 
+## [3.3.0] - 2025-01-15
+
+- feat: support exclude flags for folder upload
+
 ## [3.2.1] - 2025-01-15
 
 - fix: discord message length limit is 2000 not 4000 :skull:

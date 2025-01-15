@@ -11,3 +11,5 @@ services:
     env_file:
       - .env
       # CONFIG_PATH=/backup/test/targets.yaml
+    environment:
+      - TZ=Asia/Bangkok

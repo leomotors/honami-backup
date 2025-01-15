@@ -1,6 +1,8 @@
-import { Target } from "./config.js";
-import { environment } from "./environment.js";
-import { exec } from "./lib/exec.js";
+import { Target } from "../config.js";
+import { environment } from "../environment.js";
+
+import { createExcludeFlagsForTarball } from "./exclude.js";
+import { exec } from "./exec.js";
 
 export function tarExtension(gzip: boolean) {
   return gzip ? "tar.gz" : "tar";
@@ -18,7 +20,7 @@ export async function tarballFolder(target: Target) {
 
   const targetTarName = `out/${target.name}.${tarExtension(target.uploadType === "tar.gz")}`;
 
-  const excludeFlags = target.exclude.map((e) => `--exclude=${e}`).join(" ");
+  const excludeFlags = createExcludeFlagsForTarball(target.exclude);
 
   await exec(
     `tar ${target.uploadType === "tar.gz" ? "-czf" : "-cf"} ${targetTarName} ${excludeFlags} -C ${target.path} .`,
