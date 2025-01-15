@@ -5,8 +5,8 @@ import { environment } from "./environment.js";
 const endpoint = "https://discord.com/api/v10";
 
 export async function sendMessage(content: string) {
-  if (content.length >= 4000) {
-    content = content.slice(0, 3996) + "...";
+  if (content.length >= 2000) {
+    content = content.slice(0, 1996) + "...";
     console.log("sendMessage WARN: Message too long, truncating...");
   }
 
