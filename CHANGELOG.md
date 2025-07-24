@@ -2,6 +2,12 @@
 
 Note: Before 2.0.0 is not there
 
+## [3.4.0] - 2025-07-24
+
+- feat: PARALLEL_UPLOAD now configurable in environment
+- chore: bump deps and reduce deps
+- feat: show app version in report message
+
 ## [3.3.0] - 2025-01-15
 
 - feat: support exclude flags for folder upload

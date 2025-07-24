@@ -8,6 +8,9 @@
     "skipLibCheck": true,
     "moduleResolution": "NodeNext",
     "noUncheckedIndexedAccess": true,
-    "outDir": "dist"
+    "noEmit": true,
+    "paths": {
+      "@/*": ["./*"]
+    }
   }
 }

@@ -63,7 +63,7 @@ async function uploadTarget(
   console.log(`Uploaded ${targetName} successfully in ${duration} seconds`);
 }
 
-const parallelUploads = 10;
+const parallelUploads = environment.PARALLEL_UPLOAD;
 
 export type UploadResult = Record<string, { timeUpload: number }>;
 

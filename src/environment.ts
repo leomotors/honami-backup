@@ -12,6 +12,8 @@ const environmentSchema = z.object({
   DATABASE_URL: z.string(),
 
   CONFIG_PATH: z.string(),
+
+  PARALLEL_UPLOAD: z.coerce.number().default(10),
 });
 
 export const environment = environmentSchema.parse(process.env);

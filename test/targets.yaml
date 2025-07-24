@@ -11,5 +11,5 @@ targets:
     exclude: [.ignore-me]
     checksum: false
 postgres:
-  containerName: waifu-bot-database-1
+  containerName: postgres-17
   rootUsername: username

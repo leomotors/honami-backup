@@ -1,31 +1,28 @@
 {
   "name": "honami-backup",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "private": true,
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsup",
+    "check": "tsc",
     "dev": "pnpm build && pnpm start",
-    "start": "dotenv -- node dist/index.js",
+    "preview": "dotenv -- node dist/index.js",
     "lint": "eslint src",
-    "format": "eslint src --fix",
-    "dev:postgres": "pnpm build && dotenv -- node dist/postgres.js"
-  },
-  "dependencies": {
-    "discord-api-types": "^0.38.16",
-    "postgres": "^3.4.7",
-    "yaml": "2.8.0",
-    "zod": "^4.0.8"
+    "format": "eslint src --fix"
   },
   "devDependencies": {
     "@leomotors/config": "^1.0.1",
-    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-    "@types/node": "^24.1.0",
+    "@types/node": "^22.16.3",
     "dotenv-cli": "^9.0.0",
     "eslint": "^9.31.0",
+    "postgres": "^3.4.7",
     "prettier": "^3.6.2",
-    "typescript": "^5.8.3"
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3",
+    "yaml": "2.8.0",
+    "zod": "^4.0.8"
   },
   "packageManager": "pnpm@10.13.1"
 }

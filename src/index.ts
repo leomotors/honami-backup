@@ -102,6 +102,7 @@ async function run() {
   const totalDuration = getDuration(start, sqlTime);
 
   const reportMessage = `# Backup Report: ${new Date().toLocaleString("th-TH")}
+By Honami Backup Version: ${APP_VERSION}
 ## Total Time: ${totalDuration} seconds
 - Setup: ${setupDuration} seconds (Postgres Dump: ${isNaN(pgRes) ? "(DISABLED)" : pgRes.toFixed(3)} seconds, Prometheus Snapshot Name: ${snapshotResult ? `${snapshotResult.snapshotName} (${snapshotResult.timeSnapshot.toFixed(3)} seconds)` : "(DISABLED)"})
 - Archive: ${archiveDuration} seconds
