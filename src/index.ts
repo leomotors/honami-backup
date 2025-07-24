@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 import {
-  type uploadType as UploadType,
   isPostgresEnabled,
   isPrometheusEnabled,
   readConfig,
+  type uploadType as UploadType,
 } from "./config.js";
 import { sendMessage } from "./discord.js";
 import { createSQL } from "./lib/db.js";

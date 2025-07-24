@@ -4,7 +4,6 @@ import { sendMessage } from "../discord.js";
 import { environment } from "../environment.js";
 import { createExcludeFlagsForRClone } from "../lib/exclude.js";
 import { exec } from "../lib/exec.js";
-
 import { ArchiveResult } from "./archive.js";
 
 function getRCloneCommand(
